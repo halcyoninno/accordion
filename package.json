@@ -1,0 +1,34 @@
+{
+  "name": "@halcyoninno/accordion",
+  "version": "1.0.0",
+  "description": "Minimal Vanilla JS accordion feature, supporting nested accordions for building menus, submenus, etc.",
+  "main": "accordion.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/halcyoninno/accordion.git"
+  },
+  "keywords": [
+    "accordion",
+    "collapse",
+    "expand",
+    "toggle",
+    "ui",
+    "minimal",
+    "vanilla-js",
+    "no-dependencies",
+    "javascript",
+    "component",
+    "web",
+    "public-domain",
+    "halcyoninno"
+  ],
+  "author": "David Dosanjh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/halcyoninno/accordion/issues"
+  },
+  "homepage": "https://github.com/halcyoninno/accordion#readme"
+}
