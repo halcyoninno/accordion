@@ -1,35 +1,42 @@
-# Accordion Module
+# Basic JS Accordion
 
-## Usage (Astro)
+Offers a lean (2KB) no-dependency JS accordion feature.
 
-### Include source
+Supports nested accordions, for the use case of an expanding menu, with expanding submenus.
 
-In front matter:
-```
-import path from 'path'
-import fs from 'fs'
+Accordion target initializes in collapsed state.
 
-// Accordion module JS and CSS
-const accordionCss = fs.readFileSync(
-  path.resolve('src/browser-js/accordion/accordion.css'), 'utf-8');
-const accordionJs = fs.readFileSync(
-  path.resolve('src/browser-js/accordion/accordion.js'), 'utf-8');
 
-```
+## Usage
 
-In `<head>`:
-```
-const accordionCss = fs.readFileSync(
-  path.resolve('src/browser-js/accordion/accordion.css'), 'utf-8');
-const accordionJs = fs.readFileSync(
-  path.resolve('src/browser-js/accordion/accordion.js'), 'utf-8');
-```
 
-## Apply to elements:
-
-Specify a trigger element with `data-accordion='#foo-target-id'` attribute, then
-add `accordion-target` class to to the target
+1. To define a trigger element (i.e. button) to toggle collapse / expansion of target (i.e. menu) add to the trigger attribute `data-accordion='#foo-target-id'`
 ```
 <button data-accordion="#foo-target">Toggle</button>
+```
+
+2.  To the id-referenced target add `accordion-target` class.
+
+```
 <div id="foo-target" class='accordion-target'>...</div>
 ```
+
+3. Include sources.
+
+Install from NPM:
+
+```
+npm i halcyoninno/accordion
+```
+
+Include CSS and JS in project:
+```
+<script>
+  import "@halcyoninno/accordion/src/accordion.js";
+</script>
+<style is:global>
+  @import "@halcyoninno/accordion/src/accordion.css";
+</style>
+```
+
+`accordion.js` will self-initialize on load, applying accordion behavior between trigger and target, adding additional classes `accordion-collapsed` and `accordion-expanded` to both the target and trigger elements.
