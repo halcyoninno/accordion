@@ -1,6 +1,0 @@
-[data-accordion-trigger] {
-    height: auto;
-    overflow: hidden;
-    display: none;
-    transition: max-height 400ms ease;
-}

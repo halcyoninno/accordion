@@ -1,4 +1,3 @@
-  
 
 function listenOnce(target, event, handler) {
   target.addEventListener(event, function _handler(e) {
@@ -7,59 +6,94 @@ function listenOnce(target, event, handler) {
   });
 }
 
-/**
- * Make a clickable trigger element toggle the vertical
- * collapse and expansion of a visible DOM element target
- */
-function createAccordion(trigger, target) {
-
-  // Target starts hidden via 'display: none' however we want
-  // to switch to hiding via `max-height`
-  target.style.display = 'block'
-  target.style.maxHeight = '0px'
-  
-  trigger.classList.add('accordion-collapsed')
-  target.classList.add('accordion-collapsed')
-
-  trigger.addEventListener('click', () => {
-
-    const currentHeight = target.offsetHeight
-    const isCollapsed = currentHeight == 0
-
-    if (isCollapsed) {
-      trigger.classList.replace('accordion-collapsed', 'accordion-expanded')
-      target.classList.replace('accordion-collapsed', 'accordion-expanded')
-
-      // Set max-height aligned with fully displayed height
-      // (scrollHeight)
-      target.style.maxHeight = `${target.scrollHeight}px`
-
-      // Once transition finished, remove max-height to facilitate
-      // further expansion due to child resizing 
-      listenOnce(target, 'transitionend', () => {
-        target.style.maxHeight = '';
-      })
-
-    } else {
-      trigger.classList.replace('accordion-expanded', 'accordion-collapsed')
-      target.classList.replace('accordion-expanded', 'accordion-collapsed')
-
-      // Lock the max-height again before commencing reverse
-      // transition
-      target.style.maxHeight = `${currentHeight}px`
-
-      requestAnimationFrame(() => {
-        target.style.maxHeight = '0px'
-      })
-    }
+function collapse(target){
+  console.log("expand");
+  target.style.height = target.offsetHeight + 'px'; // lock current height
+  target.classList.add('anim');
+  requestAnimationFrame(() => target.style.height = '0px');
+  target.addEventListener('transitionend', function te(){
+    target.hidden = true;
+    target.classList.remove('anim');
+    target.style.height = '';
+    target.removeEventListener('transitionend', te);
   });
 }
 
-// Automatically install accordions
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-accordion-trigger]').forEach(target => {
-    const triggerId = target.dataset.accordionTrigger;
-    const trigger = document.getElementById(triggerId)
-    createAccordion(trigger, target);
+function expand(target){
+  console.log("collapse");
+  target.hidden = false;
+  const h = target.offsetHeight;           // measure
+  target.style.height = '0px';
+  target.classList.add('anim');
+  requestAnimationFrame(() => {
+    target.style.height = h + 'px';            // animate to measured height
   });
+  target.addEventListener('transitionend', function te(){
+    target.classList.remove('anim');
+    target.style.height = '';                  // cleanup → back to auto
+    target.removeEventListener('transitionend', te);
+  });
+}
+
+function bindToggleAction(trigger, target) {
+  if (!target._accordionActions) {
+
+    // Determine starting state
+    let startState = getComputedStyle(target)
+      .getPropertyValue("--accordion-start-state");
+    if(startState !== "collapsed" && startState !== "expanded") {
+      startState = "collapsed";
+    }
+
+    target._accordionActions = {
+      "state" : startState,
+      toggle() {
+        console.log("toggle");
+        if (this.state === "collapsed") {
+          expand(target);
+          this.state = "expanded";
+        } else {
+          collapse(target);
+          this.state = "collapsed";
+        }
+      }
+    }
+
+    trigger.addEventListener('click', () => target._accordionActions.toggle());
+  }
+}
+
+// Automatically install accordions
+
+function createAccordions() {
+  document.querySelectorAll('[data-accordion]').forEach(accordion => {
+    const styles = getComputedStyle(accordion);
+    const triggerDomId = styles.getPropertyValue('--accordion-trigger');
+    let triggerEl;
+    if (triggerDomId && 
+      (triggerEl = document.getElementById(triggerDomId))) {
+      console.log("wiring", accordion, triggerEl)
+      bindToggleAction(triggerEl, accordion);
+    } 
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  createAccordions();
 });
+
+window.addEventListener('resize', () => {
+  createAccordions();
+});
+
+const style = document.createElement('style');
+style.textContent = `
+  [data-accordion] {
+    overflow: clip;
+  }
+  [data-accordion].anim {
+    transition: height .25s ease; 
+  }
+`;
+document.head.appendChild(style);
+

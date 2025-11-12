@@ -1,0 +1,64 @@
+
+<!doctype html>
+<html>
+  <head>
+    <title>Accordion example</title>
+    <script src="./src/accordion.js"></script>
+    <style>
+
+      body {
+        container-type: inline-size;
+      }
+
+      div {
+        padding: 20px;
+        border: 1px solid black;
+      }
+
+      [data-accordion] {
+        --accordion-enabled: false;
+      }
+
+      @container (width < 600px) {
+        [data-accordion] {
+          background-color: rgb(168, 168, 255);
+          --accordion-enabled: true;
+        }
+  
+        #outer {
+          --accordion-trigger: outer-trigger;
+          --accordion-start-state: expanded;
+        }
+
+        #inner {
+          --accordion-trigger: inner-trigger;
+          --accordion-start-state: expanded;
+        }
+      }
+
+
+
+    </style>
+  </head>
+  <body>
+    <h1>Accordion example</h1>
+    <div id="outer" data-accordion> 
+    
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
+      Consectetur debitis itaque iusto nulla numquam! Voluptatibus 
+      mollitia repellendus earum dolore necessitatibus error 
+      ratione doloremque similique aperiam fugit ducimus quibusdam, 
+      corporis possimus?</p>
+      
+      <div id="inner" style="width: 50%;" data-accordion>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+          Unde illum cupiditate, dolore repudiandae.</p>       
+      </div>
+      <button id="inner-trigger">trigger</button>
+    
+    </div>
+    
+    <button id="outer-trigger">trigger</button>
+
+  </body>
+</html>

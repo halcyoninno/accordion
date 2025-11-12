@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "description": "Minimal Vanilla JS accordion feature, supporting nested accordions for building menus, submenus, etc.",
   "main": "src/accordion.js",
-  "files": [
-    "src",
-    "README.md"
-  ],
+  "files": ["src", "README.md"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
