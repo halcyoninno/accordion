@@ -36,17 +36,22 @@ function expand(target){
 }
 
 function bindToggleAction(trigger, target) {
+
+  // responsive CSS can disable accordion via --accordion-disabled 
+  // applied to target
+  // TODO: check if necessary
+  const enabled = getComputedStyle(target)
+    .getPropertyValue("--accordion-disabled") !== "true";
+
+  if (!enabled) {
+    console.log("disabled via CSS rule", target);
+  }
+
+  // Add accordion methods to element instance
   if (!target._accordionActions) {
 
-    // Determine starting state
-    let startState = getComputedStyle(target)
-      .getPropertyValue("--accordion-start-state");
-    if(startState !== "collapsed" && startState !== "expanded") {
-      startState = "collapsed";
-    }
-
     target._accordionActions = {
-      "state" : startState,
+      "state" : "collapsed",
       toggle() {
         console.log("toggle");
         if (this.state === "collapsed") {
@@ -67,12 +72,11 @@ function bindToggleAction(trigger, target) {
 
 function createAccordions() {
   document.querySelectorAll('[data-accordion]').forEach(accordion => {
-    const styles = getComputedStyle(accordion);
-    const triggerDomId = styles.getPropertyValue('--accordion-trigger');
+    const triggerId = accordion.dataset.trigger;
     let triggerEl;
-    if (triggerDomId && 
-      (triggerEl = document.getElementById(triggerDomId))) {
-      console.log("wiring", accordion, triggerEl)
+    if (triggerId && 
+      (triggerEl = document.getElementById(triggerId))) {
+      console.log("wiring accordion to trigger", accordion, triggerEl)
       bindToggleAction(triggerEl, accordion);
     } 
   });
@@ -88,7 +92,7 @@ window.addEventListener('resize', () => {
 
 const style = document.createElement('style');
 style.textContent = `
-  [data-accordion] {
+  [data-accordion].collapsed {
     overflow: clip;
   }
   [data-accordion].anim {

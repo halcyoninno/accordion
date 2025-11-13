@@ -3,9 +3,7 @@
 <html>
   <head>
     <title>Accordion example</title>
-    <script src="./src/accordion.js">
-      createAccordion("outer1", "outer1-trigger")
-    </script>
+    <script src="./src/accordion.js"></script>
     <style>
 
       body {
@@ -17,22 +15,34 @@
         border: 1px solid black;
       }
 
+      [data-accordion] {
+        --accordion-enabled: false;
+      }
+
       @container (width < 600px) {
         [data-accordion] {
           background-color: rgb(168, 168, 255);
+          --accordion-enabled: true;
+        }
+  
+        #outer1 {
+          --accordion-trigger: outer1-trigger;
+          --accordion-start-state: expanded;
+        }
+
+        #inner1 {
+          --accordion-trigger: inner1-trigger;
+          --accordion-start-state: expanded;
         }
       }
+
+
 
     </style>
   </head>
   <body>
-    <h1>Accordion examples</h1>
-
-    <h2>Nested</h2>
-  
-    <div id="outer1"
-      data-accordion 
-      data-trigger="outer1-trigger">
+    <h1>Accordion example</h1>
+    <div id="outer1" data-accordion> 
     
       <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
       Consectetur debitis itaque iusto nulla numquam! Voluptatibus 
@@ -40,19 +50,15 @@
       ratione doloremque similique aperiam fugit ducimus quibusdam, 
       corporis possimus?</p>
       
-      <div id="inner1" style="width: 50%;" 
-        data-accordion 
-        data-accordion-trigger="inner1-trigger">
-
+      <div id="inner1" style="width: 50%;" data-accordion>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
           Unde illum cupiditate, dolore repudiandae.</p>       
       </div>
-      
       <button id="inner1-trigger">trigger</button>
     
     </div>
     
     <button id="outer1-trigger">trigger</button>
-  
+
   </body>
 </html>
