@@ -4,7 +4,22 @@
   <head>
     <title>Accordion example</title>
     <script src="./src/accordion.js">
-      createAccordion("outer1", "outer1-trigger")
+    </script>
+    <script>
+      
+      declareAccordions({
+        triggerTargetMap: [
+          {
+            targetId: "outer1",
+            triggerId: "outer1-trigger"
+          }
+        ],
+        options: {
+          activationMediaQuery: "...",
+          initialState: "expanded"
+        }
+      });
+
     </script>
     <style>
 
@@ -40,9 +55,7 @@
       ratione doloremque similique aperiam fugit ducimus quibusdam, 
       corporis possimus?</p>
       
-      <div id="inner1" style="width: 50%;" 
-        data-accordion 
-        data-accordion-trigger="inner1-trigger">
+      <div id="inner1" style="width: 50%;">
 
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
           Unde illum cupiditate, dolore repudiandae.</p>       

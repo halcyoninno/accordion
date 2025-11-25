@@ -35,60 +35,74 @@ function expand(target){
   });
 }
 
-function bindToggleAction(trigger, target) {
+/**
+ * Note: idempotent
+ */
+function bindToggleAction(targetEl, triggerEl) {
 
-  // responsive CSS can disable accordion via --accordion-disabled 
-  // applied to target
-  // TODO: check if necessary
-  const enabled = getComputedStyle(target)
-    .getPropertyValue("--accordion-disabled") !== "true";
-
-  if (!enabled) {
-    console.log("disabled via CSS rule", target);
-  }
+  // responsive CSS can disable accordion via --accordion-disabled
+  // TODO: confirm we need this 
 
   // Add accordion methods to element instance
-  if (!target._accordionActions) {
+  if (!targetEl._accordionActions) {
 
-    target._accordionActions = {
-      "state" : "collapsed",
+    targetEl._accordionActions = {
+      "state" : "expanded",
       toggle() {
+        
+        // const enabled = getComputedStyle(targetEl)
+        //   .getPropertyValue("--accordion-disabled") !== "true";
+        // if (!enabled) {
+        //   console.log("toggle suppressed via --accordion-disabled", targetEl);
+        // }
+
         console.log("toggle");
         if (this.state === "collapsed") {
-          expand(target);
+          expand(targetEl);
           this.state = "expanded";
         } else {
-          collapse(target);
+          collapse(targetEl);
           this.state = "collapsed";
         }
       }
     }
 
-    trigger.addEventListener('click', () => target._accordionActions.toggle());
+    triggerEl.addEventListener('click', () => targetEl._accordionActions.toggle());
   }
 }
 
 // Automatically install accordions
 
-function createAccordions() {
-  document.querySelectorAll('[data-accordion]').forEach(accordion => {
-    const triggerId = accordion.dataset.trigger;
-    let triggerEl;
-    if (triggerId && 
-      (triggerEl = document.getElementById(triggerId))) {
-      console.log("wiring accordion to trigger", accordion, triggerEl)
-      bindToggleAction(triggerEl, accordion);
-    } 
-  });
-}
+// function createAccordions() {
+//   document.querySelectorAll('[data-accordion]').forEach(accordion => {
+//     const triggerId = accordion.dataset.trigger;
+//     let triggerEl;
+//     if (triggerId && 
+//       (triggerEl = document.getElementById(triggerId))) {
+//       console.log("wiring accordion to trigger", accordion, triggerEl)
+//       bindToggleAction(triggerEl, accordion);
+//     } 
+//   });
+// }
+
 
 document.addEventListener('DOMContentLoaded', () => {
-  createAccordions();
+  accordions.forEach(({targetId, triggerId}) => {
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) {
+      console.error(`target id ${targetId} not found`);
+    }
+    const triggerEl = document.getElementById(triggerId);
+    if (!triggerEl) {
+      console.error(`trigger id ${triggerId} not found`);
+    } 
+    bindToggleAction(targetEl, triggerEl);
+  });
 });
 
-window.addEventListener('resize', () => {
-  createAccordions();
-});
+// window.addEventListener('resize', () => {
+//   createAccordions();
+// });
 
 const style = document.createElement('style');
 style.textContent = `
@@ -101,3 +115,11 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+const accordions = [];
+const activationMediaQuery;
+
+function declareAccordions({}) {
+  accordions.push(accordionConfig);
+}
+
+function setActivationMediaQuery()
