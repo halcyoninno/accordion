@@ -7,17 +7,21 @@
     </script>
     <script>
       
-      declareAccordions({
+      accordionEffect({
         relations: [
           {
             targetId: "outer1",
             triggerId: "outer1-trigger"
+          },
+          {
+            targetId: "inner1",
+            triggerId: "inner1-trigger"
           }
         ],
         options: {
-          activationMediaQuery: "@media (width <= 700px)",
-          initialState: "collapsed",
-          transitionDuration: "3s"
+          activationMediaQuery: "(width <= 700px)",
+          startCollapsed: true,
+          transitionDuration: ".3s"
         }
       });
 
@@ -42,6 +46,11 @@
 
       div > * {
         background-color: antiquewhite;
+      }
+
+      p {
+        border: 1px dotted black;
+        padding: 10px;
       }
 
     </style>
@@ -71,5 +80,6 @@
     
     <button id="outer1-trigger">trigger</button>
   
+    <p>following content</p>
   </body>
 </html>

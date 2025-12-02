@@ -1,45 +1,45 @@
 # Basic JS Accordion
 
-A lean (2KB) no-dependency JS accordion feature.
+A pure-JS, media-query activated accordion feature.
 
-Supports nested accordions, for example, to build an expanding menu with expanding submenus.
+No need to clutter your html with semantically-irrelevant markup; express the accordion effect in JS.
 
-Accordion target initializes in collapsed state. I built this to handle a specific menu feature but happy to offer additional customizations. Submit an issue.
+Useful for nav components that should compress into an accordion at a media-query threshold.
 
 ## Usage
 
-1. Include sources.
-
-Install from NPM:
-
 ```
-npm i halcyoninno/accordion
-```
-
-Include CSS and JS in project:
-```
-<script>
-  import "@halcyoninno/accordion/src/accordion.js";
-</script>
-<style is:global>
-  @import "@halcyoninno/accordion/src/accordion.css";
-</style>
-```
-
-2. Define a trigger element (i.e. button) to toggle collapse / expansion of target (i.e. menu) add to the trigger attribute `data-accordion='#foo-target-id'`
-```
-<button data-accordion="#foo-target">Toggle</button>
+<html>
+  <head>
+    <title>Accordion example</title>
+    <script src="./src/accordion.js">
+    </script>
+    <script>
+      
+      accordionEffect({
+        relations: [
+          {
+            targetId: "menu-items",
+            triggerId: "toggle-button"
+          }
+        ]
+      });
 ```
 
-3. Specify target by adding `accordion-target` class.
-
+### Pass media-query and other options
 ```
-<div id="foo-target" class='accordion-target'>...</div>
+      accordionEffect({
+        relations: [
+          {
+            targetId: "menu-items",
+            triggerId: "toggle-button"
+          }
+        ]
+      });
 ```
-  
 
----
+## Note on border and padding
 
-`accordion.js` will self-initialize on load, applying accordion behavior between trigger and target, adding additional classes `accordion-collapsed` and `accordion-expanded` to both target and trigger.
+It is not trivial to implement accordion effect on a target having border and padding without adding a wrapper element to the DOM (it would require separately animating border and padding in sequence with the main content -- costly and brittle).
 
-You can control activation of accordion logic from CSS, for example to constrain it to a media query, via CSS variable `--accordion-state` set to `active` or `inactive`. Note, the package only checks this state on viewport change.
+**If the target box has padding, this package relies on the user to wrap it in a zero-padding div** to avoid potentially breaking caller's CSS rules with an unexpected dynamically added wrapper. 
