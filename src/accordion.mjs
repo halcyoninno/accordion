@@ -8,8 +8,9 @@ let relations;
 let options = {
     activationMediaQuery: undefined, 
     startCollapsed: false,
-    transitionDuration: '.25s',
-    easingFunction: 'ease'
+    transitionDuration: '.5s',
+    easingFunction: 'ease',
+    preventDefault: true
   }
 
 export function accordionEffect(config) {
@@ -25,11 +26,11 @@ export function accordionEffect(config) {
   if(options.activationMediaQuery) {
   
     // Conditionally activate based on media query 
-    mq = window.matchMedia(options.activationMediaQuery);
+    const mq = window.matchMedia(options.activationMediaQuery);
     if (mq.matches) {
       activate();
     }
-    mq.addEventListener('change', handler = () => {
+    mq.addEventListener('change', () => {
       if (mq.matches) {
         activate();
       } else {
@@ -117,9 +118,12 @@ function addStyleElementToHead(css) {
 function bindToggleAction(target, trigger) {
   if (!target._accordion) {
 
-    target._accordion = {  
+    const accordion = {  
       trigger,
-      toggle() {      
+      toggle(e) {
+        if(options.preventDefault) {
+          e?.preventDefault();
+        }      
         if (target.classList.contains("collapsed")) {
           expand(target);
         } else {
@@ -129,8 +133,18 @@ function bindToggleAction(target, trigger) {
       unbind() {
         trigger.removeEventListener('click', target._accordion.toggle);
         delete target._accordion;
+      },
+      addClass(c) {
+        target.classList.add(c);
+        trigger.classList.add(c);
+      },
+      removeClass(c) {
+        target.classList.remove(c);
+        trigger.classList.remove(c);
       }
     }
+    target._accordion = accordion;
+    trigger._accordion = accordion;
     trigger.addEventListener('click', target._accordion.toggle);
     target.classList.add(options.startCollapsed? "collapsed" : "expanded");
   }
@@ -138,7 +152,7 @@ function bindToggleAction(target, trigger) {
 
 function expand(target){
 
-  target.classList.remove('collapsed');
+  target._accordion.removeClass('collapsed');
 
   // Temporarily style as expanded, and trigger layout flush, 
   // to measure expanded height
@@ -153,17 +167,17 @@ function expand(target){
 
   target.addEventListener('transitionend', function te(){
     target.style.height = ''; // revert back to `auto`
-    target.classList.add('expanded');
+    target._accordion.addClass('expanded');
     target.removeEventListener('transitionend', te);
   });
 }
 
 function collapse(target){
-  target.classList.remove('expanded');
+  target._accordion.removeClass('expanded');
   target.style.height = target.offsetHeight + 'px';
   requestAnimationFrame(() => target.style.height = '0px');
   target.addEventListener('transitionend', function te(){
-    target.classList.add('collapsed');
+    target._accordion.addClass('collapsed');
     target.removeEventListener('transitionend', te);
   });
 }
